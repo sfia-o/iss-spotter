@@ -30,33 +30,27 @@ const fetchCoordsByIP = function(ip, callback) {
   const location = 'http://ipwho.is/' + ip;
 
   request(location, (error, response, body) => {
-    console.log('anything');
+    
     if (error) {
       console.log('error');
       return callback(error, null);
     }
 
-    if (response.statusCode !== 200) {
-
-      callback(Error(`Status Code ${response.statusCode} when fetching location coordinates. Response: ${body}`), null);
-      return;
-    }
-
-    let parsedBody = JSON.parse(body);
+    const parsedBody = JSON.parse(body);
 
     if (!parsedBody.success) {
       const message = `Success status was ${parsedBody.success}. Server message says: ${parsedBody.message} when fetching for IP ${parsedBody.ip}`;
       callback(Error(message), null);
-      return;      
+      return;
     }
 
     const coordinates = {};
-    coordinates.latitude = JSON.parse(body).latitude;
-    coordinates.longitude = JSON.parse(body).longitude;
+    coordinates.latitude = parsedBody.latitude;
+    coordinates.longitude = parsedBody.longitude;
     
     callback(null, coordinates);
-  })
+  });
 
-}
+};
 
 module.exports = { fetchMyIP, fetchCoordsByIP };
