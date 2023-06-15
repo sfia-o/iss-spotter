@@ -1,11 +1,3 @@
-/**
- * Makes a single API request to retrieve the user's IP address.
- * Input:
- *   - A callback (to pass back an error or the IP string)
- * Returns (via Callback):
- *   - An error, if any (nullable)
- *   - The IP address as a string (null if error). Example: "162.245.144.188"
- */
 const request = require('request');
 
 const fetchMyIP = function(callback) {
@@ -25,6 +17,8 @@ const fetchMyIP = function(callback) {
   });
 };
 
+
+
 const fetchCoordsByIP = function(ip, callback) {
 
   const location = 'http://ipwho.is/' + ip;
@@ -43,18 +37,49 @@ const fetchCoordsByIP = function(ip, callback) {
       callback(Error(message), null);
       return;
     }
-
-    const coordinates = {};
-    coordinates.latitude = parsedBody.latitude;
-    coordinates.longitude = parsedBody.longitude;
+    
+    const coordinates = {
+      latitude: parsedBody.latitude,
+      longitude: parsedBody.longitude
+    };
+    
     
     callback(null, coordinates);
+    return coordinates;
   });
 
 };
 
 const fetchISSFlyOverTimes = function(coords, callback) {
 
-}
+  console.log(coords);
 
-module.exports = { fetchMyIP, fetchCoordsByIP, fetchCoordsByIP };
+  const latitude = coords.latitude;
+  const longitude = coords.longitude;
+
+  const result = [];
+
+  const flyOver = `https://iss-flyover.herokuapp.com/json/?lat=${latitude}&lon=${longitude}`;
+
+  request(flyOver, (error, response, body) => {
+
+    if (error) {
+      console.log('error');
+      return callback(error, null);
+    }
+
+    if (response.statusCode !== 200) {
+      callback(Error(`Status Code ${response.statusCode} when fetching fly over times. Response: ${body}`), null);
+      return;
+    }
+
+    const parsedBody = JSON.parse(body);
+
+    result.push(parsedBody.response);
+
+    callback(null, result);
+  });
+
+};
+
+module.exports = { fetchMyIP, fetchCoordsByIP, fetchISSFlyOverTimes };
