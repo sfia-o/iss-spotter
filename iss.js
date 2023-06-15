@@ -51,15 +51,8 @@ const fetchCoordsByIP = function(ip, callback) {
 };
 
 const fetchISSFlyOverTimes = function(coords, callback) {
-
-  console.log(coords);
-
-  const latitude = coords.latitude;
-  const longitude = coords.longitude;
-
-  const result = [];
-
-  const flyOver = `https://iss-flyover.herokuapp.com/json/?lat=${latitude}&lon=${longitude}`;
+  
+  const flyOver = `https://iss-flyover.herokuapp.com/json/?lat=${coords.latitude}&lon=${coords.longitude}`;
 
   request(flyOver, (error, response, body) => {
 
@@ -73,11 +66,9 @@ const fetchISSFlyOverTimes = function(coords, callback) {
       return;
     }
 
-    const parsedBody = JSON.parse(body);
+    const times = JSON.parse(body).response;
 
-    result.push(parsedBody.response);
-
-    callback(null, result);
+    callback(null, times);
   });
 
 };
