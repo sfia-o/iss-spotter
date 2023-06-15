@@ -1,6 +1,11 @@
-const fetchMyIP = function(callback) {
+const { fetchMyIP } = require ('./iss');
 
-};
+fetchMyIP((error, ip) => {
+  if(error) {
+    console.log('There was an error', error);
+    return;
+  }
 
-module.exports = { fetchMyIP };
+  console.log('IP is: ', ip);
+});
 
