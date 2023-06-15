@@ -23,7 +23,25 @@ const fetchMyIP = function(callback) {
     const ip = JSON.parse(body).ip;
     callback(null, ip);
   });
-
 };
 
-module.exports = { fetchMyIP };
+const fetchCoordsByIP = function(ip, callback) {
+
+  const location = 'http://ipwho.is/' + ip;
+
+  request(location, (error, response, body) => {
+    if (error) {
+      return callback(error, null);
+    }
+
+    if (response.statusCode !== 200) {
+      callback(Error(`Status Code ${response.statusCode} when fetching location coordinates. Response: ${body}`), null);
+      return;
+    }
+ 
+    callback(null, coordinates);
+  })
+
+}
+
+module.exports = { fetchMyIP, fetchCoordsByIP };
