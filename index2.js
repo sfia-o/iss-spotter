@@ -14,9 +14,9 @@ const print = function(passTimes) {
 };
 
 nextISSTimesForMyLocation()
-.then((times) => {
-  print(times);
-})
-.catch((error) => {
-  console.log("It didn't work!", error.message);
-});
+  .then((times) => {
+    print(times);
+  })
+  .catch((error) => {
+    console.log("It didn't work!", error.message);
+  });
